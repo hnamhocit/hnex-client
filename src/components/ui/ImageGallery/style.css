@@ -1,0 +1,31 @@
+.fadeInLeft {
+	animation: FadeInLeft 150ms ease;
+}
+
+@keyframes FadeInLeft {
+	from {
+		transform: translateX(-25%);
+		opacity: 0;
+	}
+
+	to {
+		transform: translateX(0);
+		opacity: 1;
+	}
+}
+
+.fadeInRight {
+	animation: FadeInRight 150ms ease;
+}
+
+@keyframes FadeInRight {
+	from {
+		transform: translateX(25%);
+		opacity: 0;
+	}
+
+	to {
+		transform: translateX(0);
+		opacity: 1;
+	}
+}
