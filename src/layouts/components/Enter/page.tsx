@@ -1,27 +1,28 @@
-"use client";
+'use client'
 
-import { Button } from "@nextui-org/react";
-import Image from "next/image";
-import { redirect } from "next/navigation";
-import { useContext, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { MailAtSign01Icon } from 'hugeicons-react'
+import Image from 'next/image'
+import { redirect } from 'next/navigation'
+import { useContext, useState } from 'react'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
-import FormGroup from "@/components/ui/FormGroup";
-import api from "@/config/axios";
-import { ToastContext } from "@/context/ToastContext";
-import { useAppDispatch } from "@/store";
-import { fetchUser } from "@/store/reducers/userSlice/thunks";
-import { JwtToken } from "@/types/auth/jwtToken";
-import { IResponse } from "@/types/response";
-import { setTokens } from "@/utils/tokens";
-import { validate } from "@/utils/validate";
-import { MailAtSign01Icon } from "hugeicons-react";
-import RegisterModal from "./RegisterModal";
+import FormGroup from '@/components/ui/FormGroup'
+import api from '@/config/axios'
+import { ToastContext } from '@/context/ToastContext'
+import { IJwtToken } from '@/interfaces/auth/jwtToken'
+import { IResponse } from '@/interfaces/response'
+import { useAppDispatch } from '@/store'
+import { fetchUser } from '@/store/reducers/userSlice/thunks'
+import { setTokens } from '@/utils/tokens'
+import { validate } from '@/utils/validate'
+import { Button } from '@nextui-org/react'
+
+import RegisterModal from './RegisterModal'
 
 type FormData = {
-	email: string;
-	password: string;
-};
+	email: string
+	password: string
+}
 
 const Enter = () => {
 	const {
@@ -30,42 +31,43 @@ const Enter = () => {
 		control,
 		reset,
 	} = useForm<FormData>({
-		mode: "onChange",
+		mode: 'onChange',
 		defaultValues: {
-			email: "",
-			password: "",
+			email: '',
+			password: '',
 		},
-	});
-	const [disabled, setDisabled] = useState(false);
-	const { newToast } = useContext(ToastContext);
-	const dispatch = useAppDispatch();
+	})
+	const [disabled, setDisabled] = useState(false)
+	const { newToast } = useContext(ToastContext)
+	const dispatch = useAppDispatch()
 
 	const onSubmit: SubmitHandler<FormData> = async (formData) => {
-		setDisabled(true);
-		const { data } = await api.post<IResponse<JwtToken>>(
-			"auth/login",
-			formData
-		);
+		setDisabled(true)
 
-		if ("error" in data) {
+		const { data } = await api.post<IResponse<IJwtToken>>(
+			'auth/login',
+			formData,
+		)
+
+		if ('error' in data) {
 			newToast({
-				type: "error",
-				message: data.error ?? "Unknown error!",
-			});
-			setDisabled(false);
-			return;
+				type: 'error',
+				message: data.error ?? 'Unknown error!',
+			})
+			setDisabled(false)
+			return
 		}
 
-		reset();
-		setTokens(data.data as JwtToken);
-		dispatch(fetchUser());
-		setDisabled(false);
-		redirect("/");
-	};
+		reset()
+		setTokens(data.data as IJwtToken)
+		dispatch(fetchUser())
+		setDisabled(false)
+		redirect('/')
+	}
 
 	return (
 		<>
-			<section className="star-fall">
+			<section className='star-fall'>
 				<span></span>
 				<span></span>
 				<span></span>
@@ -78,36 +80,35 @@ const Enter = () => {
 				<span></span>
 			</section>
 
-			<div className="flex items-center justify-center h-screen">
-				<div className="space-y-7 max-w-sm w-full">
-					<div className="text-center space-y-3">
+			<div className='flex items-center justify-center h-screen'>
+				<div className='space-y-7 max-w-sm w-full'>
+					<div className='text-center space-y-3'>
 						<Image
-							src="/logo.jpg"
-							alt="App Logo"
+							src='/logo.jpg'
+							alt='App Logo'
 							width={96}
 							height={96}
-							className="w-24 h-24 mx-auto rounded-full object-cover"
+							className='w-24 h-24 mx-auto rounded-full object-cover'
 						/>
 
-						<div className="text-gray-300 font-medium">
+						<div className='text-gray-300 font-medium'>
 							Buy anything, at anywhere, online, fast, reliable.
 						</div>
 					</div>
 
 					<form
 						onSubmit={handleSubmit(onSubmit)}
-						className="p-7 rounded-2xl bg-[rgba(0,0,0,.3)] backdrop-blur-3xl shadow-3xl space-y-7"
-					>
+						className='p-7 rounded-2xl bg-[rgba(0,0,0,.3)] backdrop-blur-3xl shadow-3xl space-y-7'>
 						<Controller
 							control={control}
-							name="email"
+							name='email'
 							rules={{
 								required: validate.required,
 								pattern: validate.email,
 							}}
 							render={({ field: { value, onChange } }) => (
 								<FormGroup
-									label="Email"
+									label='Email'
 									startIcon={<MailAtSign01Icon size={20} />}
 									value={value}
 									onChange={onChange}
@@ -118,14 +119,14 @@ const Enter = () => {
 
 						<Controller
 							control={control}
-							name="password"
+							name='password'
 							rules={{
 								required: validate.required,
 								pattern: validate.password,
 							}}
 							render={({ field: { value, onChange } }) => (
 								<FormGroup
-									label="Password"
+									label='Password'
 									isPassword
 									value={value}
 									onChange={onChange}
@@ -136,11 +137,10 @@ const Enter = () => {
 
 						<Button
 							disabled={disabled}
-							type="submit"
+							type='submit'
 							fullWidth
-							color="primary"
-							radius="full"
-						>
+							color='primary'
+							radius='full'>
 							Submit
 						</Button>
 					</form>
@@ -149,7 +149,7 @@ const Enter = () => {
 				</div>
 			</div>
 		</>
-	);
-};
+	)
+}
 
-export default Enter;
+export default Enter

@@ -9,7 +9,7 @@ interface ProgressBarProps {
 
 const ProgressBar: FC<ProgressBarProps> = ({
 	currentTime,
-	duration = 0,
+	duration = 1,
 	ref,
 }) => {
 	const handleChange = (value: number | number[]) => {

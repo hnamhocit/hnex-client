@@ -8,6 +8,7 @@ import { selectUser } from "@/store/reducers/userSlice";
 import { fetchUser } from "@/store/reducers/userSlice/thunks";
 import News from "../../layouts/components/News";
 import Sidebar from "../../layouts/components/Sidebar";
+import ActivateAccount from "../components/ActivateAccount";
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => {
 	const dispatch = useAppDispatch();
@@ -27,6 +28,10 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
 		);
 	} else if (user.status === "failed") {
 		return <Enter />;
+	}
+
+	if (user && !user.data?.emailVerified) {
+		return <ActivateAccount />;
 	}
 
 	return (

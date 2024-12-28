@@ -1,10 +1,10 @@
-import { Avatar } from '@nextui-org/react'
 import {
 	DangerIcon,
 	Logout01Icon,
 	Profile02Icon,
 	Settings01Icon,
 } from 'hugeicons-react'
+import { redirect } from 'next/navigation'
 import { useSelector } from 'react-redux'
 
 import Dropdown from '@/components/ui/Dropdown'
@@ -12,7 +12,7 @@ import DropdownItem from '@/components/ui/Dropdown/DropdownItem'
 import { useAppDispatch } from '@/store'
 import { selectUser } from '@/store/reducers/userSlice'
 import { deleteUser, userLogout } from '@/store/reducers/userSlice/thunks'
-import { redirect } from 'next/navigation'
+import { Avatar } from '@nextui-org/react'
 
 const UserMenu = () => {
 	const user = useSelector(selectUser)
@@ -62,7 +62,7 @@ const UserMenu = () => {
 			trigger={
 				<>
 					<Avatar
-						src={user.data?.photoURL}
+						src={user.data?.photoURL ?? undefined}
 						alt={user.data?.displayName}
 					/>
 
@@ -77,7 +77,9 @@ const UserMenu = () => {
 				</>
 			}>
 			{Object.entries(items).map((entry) => (
-				<div key={entry[0]} className='space-y-3'>
+				<div
+					key={entry[0]}
+					className='space-y-3'>
 					<div className='text-sm text-gray-500'>
 						{entry[1].title}
 					</div>

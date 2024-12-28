@@ -1,4 +1,4 @@
-export type JwtToken = {
+export type IJwtToken = {
 	accessToken: string
 	refreshToken: string
 }

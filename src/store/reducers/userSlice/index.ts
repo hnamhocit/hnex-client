@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-import { User } from '@/types/user'
+import { IUser } from '@/interfaces/user'
 import { RootState } from '../..'
 import { userExtraReducers } from './thunks'
 
 export interface UserInitial {
-	data: null | User
+	data: null | IUser
 	status: 'idle' | 'loading' | 'succeeded' | 'failed'
 	error?: string
 }
@@ -19,15 +19,18 @@ const userSlice = createSlice({
 	name: 'user',
 	initialState: initialState,
 	reducers: {
-		setUser(state, payload) {
+		setUserData(state, action) {
 			state.status = 'succeeded'
-			state.data = payload.payload
+			state.data = action.payload
+		},
+		updateUserData(state, action) {
+			state.data = { ...state.data, ...action.payload }
 		},
 	},
 	extraReducers: userExtraReducers,
 })
 
 export const selectUser = (state: RootState) => state.user
-export const { setUser } = userSlice.actions
+export const { setUserData, updateUserData } = userSlice.actions
 
 export default userSlice.reducer

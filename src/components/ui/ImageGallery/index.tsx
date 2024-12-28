@@ -1,18 +1,24 @@
+import './style.css'
+
 import clsx from 'clsx'
 import { ArrowLeft02Icon, ArrowRight02Icon } from 'hugeicons-react'
 import { motion } from 'motion/react'
 import { FC, memo, useCallback, useRef, useState } from 'react'
 
-import { Media } from '@/types/media'
+import { IMedia } from '@/interfaces/media'
 import { getMediaURL } from '@/utils/getUploadURL'
-import './style.css'
 
 interface ImageGalleryProps {
-	media: Media[]
+	media: IMedia[]
+	showCount?: number
 	className?: string
 }
 
-const ImageGallery: FC<ImageGalleryProps> = ({ media, className }) => {
+const ImageGallery: FC<ImageGalleryProps> = ({
+	media,
+	className,
+	showCount,
+}) => {
 	const [isExpanded, setIsExpanded] = useState(false)
 	const [activeIndex, setActiveIndex] = useState(0)
 	const prevIndex = useRef(0)
@@ -31,7 +37,7 @@ const ImageGallery: FC<ImageGalleryProps> = ({ media, className }) => {
 				}
 				return prev + 1
 			}),
-		[media.length]
+		[media.length],
 	)
 
 	const handlePrev = useCallback(
@@ -45,26 +51,40 @@ const ImageGallery: FC<ImageGalleryProps> = ({ media, className }) => {
 
 				return prev - 1
 			}),
-		[media.length]
+		[media.length],
 	)
 
 	return (
 		<>
-			{media.map((item, i) => (
-				<div
-					key={item.id}
-					className={clsx(
-						className,
-						'transition-all cursor-pointer bg-center bg-cover bg-no-repeat'
-					)}
-					style={{
-						backgroundImage: `url(${getMediaURL(item.id)})`,
-					}}
-					onClick={() => {
-						toggleIsExpanded()
-						setActiveIndex(i)
-					}}></div>
-			))}
+			<div className='grid grid-cols-2 gap-1'>
+				{media.slice(0, showCount).map((item, i) => (
+					<div
+						key={item.id}
+						className={clsx(
+							className,
+							'relative transition-all cursor-pointer bg-center bg-cover bg-no-repeat',
+							{
+								'col-span-2':
+									media.length === 1 ||
+									(media.length === 3 && i == 2),
+								'min-h-[calc(120*4px)]': media.length === 1,
+							},
+						)}
+						style={{
+							backgroundImage: `url(${getMediaURL(item.id)})`,
+						}}
+						onClick={() => {
+							toggleIsExpanded()
+							setActiveIndex(i)
+						}}>
+						{i + 1 === showCount && media.length > showCount && (
+							<div className='absolute inset-0 flex items-center text-2xl font-bold justify-center bg-[rgba(0,0,0,.3)] text-white rounded-2xl'>
+								+{media.length - showCount}
+							</div>
+						)}
+					</div>
+				))}
+			</div>
 
 			<div
 				onClick={toggleIsExpanded}
@@ -73,7 +93,7 @@ const ImageGallery: FC<ImageGalleryProps> = ({ media, className }) => {
 					{
 						'visible opacity-1': isExpanded,
 						'invisible opacity-0': !isExpanded,
-					}
+					},
 				)}>
 				<div className='absolute inset-0 -z-10'>
 					{media.map((item, i) => (
@@ -82,7 +102,7 @@ const ImageGallery: FC<ImageGalleryProps> = ({ media, className }) => {
 							className={clsx(
 								'w-full h-full bg-contain bg-center bg-no-repeat transition-all',
 								isNext ? 'fadeInLeft' : 'fadeInRight',
-								i !== activeIndex && 'hidden'
+								i !== activeIndex && 'hidden',
 							)}
 							style={{
 								backgroundImage: `url(${getMediaURL(item.id)}`,

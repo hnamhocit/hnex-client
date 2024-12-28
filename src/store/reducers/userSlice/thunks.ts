@@ -1,35 +1,36 @@
+import api from '@/config/axios'
+import { IResponse } from '@/interfaces/response'
+import { IUser } from '@/interfaces/user'
+import { clearTokens } from '@/utils/tokens'
 import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit'
 
-import api from '@/config/axios'
-import { IResponse } from '@/types/response'
-import { User } from '@/types/user'
-import { UserInitial } from '.'
+import { UserInitial } from './'
 
 export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
-	const { data } = await api.get<IResponse<User>>('users/me')
+	const { data } = await api.get<IResponse<IUser>>('users/me')
 	return data.data
 })
 
 export const updateUser = createAsyncThunk(
 	'user/updateUser',
-	async (changes: Partial<User>) => {
-		const { data } = await api.patch<IResponse<User>>('users/me', changes)
+	async (changes: Partial<IUser>) => {
+		const { data } = await api.patch<IResponse<IUser>>('users/me', changes)
 		return data.data
-	}
+	},
 )
 
-export const userLogout = createAsyncThunk('users/logout', async () => {
-	const { data } = await api.get<IResponse<User>>('users/me/logout')
-	return data.data
+export const userLogout = createAsyncThunk('user/logout', async () => {
+	await api.get<IResponse<IUser>>('auth/logout')
+	clearTokens()
 })
 
 export const deleteUser = createAsyncThunk('user/deleteUser', async () => {
-	const { data } = await api.delete<IResponse<User>>('users/me')
+	const { data } = await api.delete<IResponse<IUser>>('users/me')
 	return data.data
 })
 
 export const userExtraReducers = (
-	builder: ActionReducerMapBuilder<UserInitial>
+	builder: ActionReducerMapBuilder<UserInitial>,
 ) => {
 	builder
 		.addCase(fetchUser.pending, (state) => {
@@ -47,6 +48,7 @@ export const userExtraReducers = (
 	builder
 		.addCase(userLogout.fulfilled, (state) => {
 			state.data = null
+			state.status = 'idle'
 		})
 		.addCase(userLogout.rejected, (state, action) => {
 			state.error = action.error.message

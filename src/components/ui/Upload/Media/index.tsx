@@ -1,13 +1,13 @@
-import clsx from 'clsx'
-import { FC, memo } from 'react'
+import clsx from "clsx";
+import { FC, memo } from "react";
 
-import { MediaType } from '@/types/media'
-import Video from '../../Video'
+import { MediaType } from "@/interfaces/media";
+import Video from "../../Video";
 
 interface MediaProps {
-	blob: string
-	type: MediaType
-	className?: string
+	blob: string;
+	type: MediaType;
+	className?: string;
 }
 
 const Media: FC<MediaProps> = ({ blob, type, className }) => {
@@ -16,18 +16,19 @@ const Media: FC<MediaProps> = ({ blob, type, className }) => {
 			return (
 				<div
 					className={clsx(
-						'bg-center bg-cover bg-no-repeat cursor-pointer',
+						"bg-center bg-cover bg-no-repeat cursor-pointer",
 						className
 					)}
 					style={{
 						backgroundImage: `url(${blob})`,
-					}}></div>
-			)
+					}}
+				></div>
+			);
 		case MediaType.VIDEO:
-			return <Video src={blob} />
+			return <Video src={blob} />;
 		default:
-			break
+			break;
 	}
-}
+};
 
-export default memo(Media)
+export default memo(Media);

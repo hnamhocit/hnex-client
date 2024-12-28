@@ -1,6 +1,6 @@
-import { JwtToken } from '@/types/auth/jwtToken'
+import { IJwtToken } from '@/interfaces/auth/jwtToken'
 
-const setTokens = (tokens: JwtToken) => {
+const setTokens = (tokens: IJwtToken) => {
 	localStorage.setItem('accessToken', tokens.accessToken)
 	localStorage.setItem('refreshToken', tokens.refreshToken)
 }

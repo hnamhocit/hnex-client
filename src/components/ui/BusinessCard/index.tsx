@@ -1,11 +1,11 @@
-import { Avatar, Button } from '@nextui-org/react'
+import { Avatar, AvatarProps, Button } from '@nextui-org/react'
 import Link from 'next/link'
-import { FC, memo, ReactNode } from 'react'
+import { FC, memo } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
+import { IUser } from '@/interfaces/user'
 import { selectUser } from '@/store/reducers/userSlice'
-import { User } from '@/types/user'
 import { formatNumber } from '@/utils/formatNumber'
 
 const CardContainer = styled(Link)`
@@ -22,19 +22,22 @@ const CardContainer = styled(Link)`
 	}
 `
 
-interface BusinessCardProps {
-	user: User
-	children: ReactNode
+interface BusinessCardProps extends AvatarProps {
+	user: IUser
 }
 
-const BusinessCard: FC<BusinessCardProps> = ({ user, children }) => {
+const BusinessCard: FC<BusinessCardProps> = ({ user, ...props }) => {
 	const me = useSelector(selectUser)
 
 	return (
 		<CardContainer
 			href={`/users/${user.id}`}
 			className='relative cursor-pointer'>
-			{children}
+			<Avatar
+				{...props}
+				src={user?.photoURL ?? undefined}
+				alt={user.displayName}
+			/>
 
 			<div className='content absolute bg-white border z-20 top-full left-0 min-w-80 p-4 rounded-2xl shadow-xl transition-all min-h-20 space-y-3'>
 				<div className='flex items-center justify-between'>
@@ -45,9 +48,11 @@ const BusinessCard: FC<BusinessCardProps> = ({ user, children }) => {
 					/>
 
 					{user.id !== me.data?.id && (
-						<Button radius='full' color='primary'>
+						<Button
+							radius='full'
+							color='primary'>
 							{user.followers?.filter(
-								(follow) => follow.followedById === me.data?.id
+								(follow) => follow.followedById === me.data?.id,
 							)
 								? 'Un follow'
 								: 'Follow'}

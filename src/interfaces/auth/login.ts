@@ -1,4 +1,4 @@
-export type Login = {
+export type ILogin = {
 	email: string
 	password: string
 }

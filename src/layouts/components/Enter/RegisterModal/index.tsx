@@ -14,10 +14,10 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import FormGroup from '@/components/ui/FormGroup'
 import api from '@/config/axios'
 import { ToastContext } from '@/context/ToastContext'
+import { IJwtToken } from '@/interfaces/auth/jwtToken'
+import { IResponse } from '@/interfaces/response'
 import { useAppDispatch } from '@/store'
 import { fetchUser } from '@/store/reducers/userSlice/thunks'
-import { JwtToken } from '@/types/auth/jwtToken'
-import { IResponse } from '@/types/response'
 import { setTokens } from '@/utils/tokens'
 import { validate } from '@/utils/validate'
 
@@ -48,20 +48,23 @@ const RegisterModal = () => {
 
 	const onSubmit: SubmitHandler<FormData> = async (formData) => {
 		setDisabled(true)
-		const { data } = await api.post<IResponse<JwtToken>>(
+		const { data } = await api.post<IResponse<IJwtToken>>(
 			'auth/register',
-			formData
+			formData,
 		)
 
 		if ('error' in data) {
 			setDisabled(false)
-			newToast({ type: 'error', message: data.error ?? 'Unknown error!' })
+			newToast({
+				type: 'error',
+				message: data.error ?? 'Unknown error!',
+			})
 			return
 		}
 
 		reset()
 		setDisabled(false)
-		setTokens(data.data as JwtToken)
+		setTokens(data.data as IJwtToken)
 		dispatch(fetchUser())
 		redirect('/')
 	}
@@ -77,7 +80,9 @@ const RegisterModal = () => {
 				Register!
 			</motion.button>
 
-			<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+			<Modal
+				isOpen={isOpen}
+				onOpenChange={onOpenChange}>
 				<ModalContent>
 					<ModalHeader className='text-black'>Register</ModalHeader>
 					<ModalBody>
@@ -142,6 +147,7 @@ const RegisterModal = () => {
 							/>
 
 							<Button
+								type='submit'
 								disabled={disabled}
 								color='primary'
 								fullWidth
