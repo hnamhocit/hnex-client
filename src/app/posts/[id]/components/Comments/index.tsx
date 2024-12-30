@@ -2,7 +2,9 @@ import { SentIcon } from 'hugeicons-react'
 import moment from 'moment'
 import { FC, memo, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import Markdown from 'react-markdown'
 import { useSelector } from 'react-redux'
+import remarkGfm from 'remark-gfm'
 
 import BusinessCard from '@/components/ui/BusinessCard'
 import ImageGallery from '@/components/ui/ImageGallery'
@@ -140,7 +142,11 @@ const Comments: FC<CommentsProps> = ({ comments, id }) => {
 								className='min-h-60'
 							/>
 
-							<div className='text-black'>{comment.content}</div>
+							<Markdown
+								className='text-black markdown'
+								remarkPlugins={[remarkGfm]}>
+								{comment.content}
+							</Markdown>
 						</div>
 					</div>
 				</div>

@@ -1,7 +1,7 @@
 import {
     Delete02Icon, Image02Icon, Link01Icon, TextBoldIcon, TextItalicIcon
 } from 'hugeicons-react'
-import { ChangeEvent, Dispatch, FC, memo, SetStateAction, useRef } from 'react'
+import { ChangeEvent, Dispatch, FC, memo, SetStateAction, useRef, useState } from 'react'
 
 import { Textarea } from '@nextui-org/react'
 
@@ -22,6 +22,7 @@ const TextEditor: FC<TextEditorProps> = ({
 	files,
 	setFiles,
 }) => {
+	const [selectedText, setSelectedText] = useState('')
 	const imageRef = useRef<HTMLDivElement>(null)
 
 	const handleChange = (
@@ -32,18 +33,68 @@ const TextEditor: FC<TextEditorProps> = ({
 		setValue(val)
 	}
 
+	const handleAddLink = () => {
+		if (selectedText.length === 0) {
+			setValue(value + '[text](url)')
+			return
+		}
+
+		setValue((prev) =>
+			prev.replace(selectedText, `[${selectedText}](${selectedText})`),
+		)
+		setSelectedText('')
+	}
+
+	const handleBoldText = () => {
+		if (selectedText.length === 0) {
+			setValue(value + '**text**')
+			return
+		}
+
+		setValue(value.replace(selectedText, `**${selectedText}**`))
+		setSelectedText('')
+	}
+
+	const handleItalicText = () => {
+		if (selectedText.length === 0) {
+			setValue(value + '_text_')
+			return
+		}
+
+		setValue(value.replace(selectedText, `_${selectedText}_`))
+		setSelectedText('')
+	}
+
+	const handleMouseUp = () => {
+		const selection = window.getSelection()
+		if (selection && selection.toString().length > 0) {
+			setSelectedText(selection.toString())
+		}
+	}
+
 	return (
-		<div className='space-y-2 p-2 bg-white rounded-2xl'>
+		<div
+			onMouseUp={handleMouseUp}
+			className='space-y-2 p-2 bg-white rounded-2xl'>
 			<div className='flex items-center gap-2'>
-				<button className='p-1 text-sm rounded-md text-black hover:bg-gray-200 transition'>
+				<button
+					type='button'
+					onClick={handleBoldText}
+					className='p-1 text-sm rounded-md text-black hover:bg-gray-200 transition'>
 					<TextBoldIcon size={18} />
 				</button>
 
-				<button className='p-1 text-sm rounded-md text-black hover:bg-gray-200 transition'>
+				<button
+					type='button'
+					onClick={handleItalicText}
+					className='p-1 text-sm rounded-md text-black hover:bg-gray-200 transition'>
 					<TextItalicIcon size={18} />
 				</button>
 
-				<button className='p-1 text-sm rounded-md text-black hover:bg-gray-200 transition'>
+				<button
+					type='button'
+					onClick={handleAddLink}
+					className='p-1 text-sm rounded-md text-black hover:bg-gray-200 transition'>
 					<Link01Icon size={18} />
 				</button>
 

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+::selection {
+	background-color: rgb(99 102 241);
+	color: #fff;
+}
+
 @layer components {
 	.glassmorphism {
 		@apply bg-[rgba(55,65,81,.5)] backdrop-blur-md;
@@ -15,6 +20,12 @@
 		-ms-overflow-style: none;
 		scrollbar-width: none;
 	}
+}
+
+.markdown a {
+	text-decoration: underline;
+	color: rgb(99 102 241);
+	font-weight: 500;
 }
 
 .star-fall {

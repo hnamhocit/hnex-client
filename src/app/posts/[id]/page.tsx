@@ -23,7 +23,6 @@ const PostDetail = () => {
 	useEffect(() => {
 		const fetchPost = async () => {
 			const { data } = await api.get<IResponse<IPost>>(`/posts/${id}`)
-			console.log(data.data?.comments)
 			setPost(data.data)
 			setLoading(false)
 		}
