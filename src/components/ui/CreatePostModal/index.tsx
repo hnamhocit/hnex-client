@@ -3,21 +3,13 @@ import { useContext, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
 
-import api from '@/config/axios'
 import { socket } from '@/config/socket'
 import { ToastContext } from '@/context/ToastContext'
-import { IMedia } from '@/interfaces/media'
-import { IResponse } from '@/interfaces/response'
 import { selectUser } from '@/store/reducers/userSlice'
+import { uploadMedia } from '@/utils/uploadMedia'
 import { validate } from '@/utils/validate'
 import {
-	Button,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalHeader,
-	Textarea,
-	useDisclosure,
+    Button, Modal, ModalBody, ModalContent, ModalHeader, Textarea, useDisclosure
 } from '@nextui-org/react'
 
 import MediaUpload from './MediaUpload'
@@ -44,27 +36,6 @@ const CreatePostModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure()
 	const user = useSelector(selectUser)
 
-	const getUploadImageIds = async () => {
-		return await Promise.all([
-			...files.map(async (file) => {
-				const _file = new FormData()
-				_file.append('file', file)
-
-				const { data } = await api.post<IResponse<IMedia>>(
-					'media/upload',
-					_file,
-					{
-						headers: {
-							'Content-Type': 'multipart/form-data',
-						},
-					},
-				)
-
-				return data.data?.id
-			}),
-		])
-	}
-
 	const onSubmit: SubmitHandler<FormData> = async (formData) => {
 		setDisabled(true)
 
@@ -78,7 +49,7 @@ const CreatePostModal = () => {
 			return
 		}
 
-		const mediaIds = await getUploadImageIds()
+		const mediaIds = await uploadMedia(files)
 
 		socket.emit('post:create', {
 			data: { content: formData.content, mediaIds },

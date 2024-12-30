@@ -7,6 +7,7 @@ import { FC, memo, useCallback, useRef, useState } from 'react'
 
 import { IMedia } from '@/interfaces/media'
 import { getMediaURL } from '@/utils/getUploadURL'
+import { roundedVariants } from '@/utils/roundedVariants'
 
 interface ImageGalleryProps {
 	media: IMedia[]
@@ -17,7 +18,7 @@ interface ImageGalleryProps {
 const ImageGallery: FC<ImageGalleryProps> = ({
 	media,
 	className,
-	showCount,
+	showCount = 4,
 }) => {
 	const [isExpanded, setIsExpanded] = useState(false)
 	const [activeIndex, setActiveIndex] = useState(0)
@@ -61,14 +62,16 @@ const ImageGallery: FC<ImageGalleryProps> = ({
 					<div
 						key={item.id}
 						className={clsx(
-							className,
 							'relative transition-all cursor-pointer bg-center bg-cover bg-no-repeat',
 							{
 								'col-span-2':
 									media.length === 1 ||
 									(media.length === 3 && i == 2),
-								'min-h-[calc(120*4px)]': media.length === 1,
+								'!min-h-[calc(120*4px)] !bg-contain':
+									media.length === 1,
 							},
+							roundedVariants(media.length)[i],
+							className,
 						)}
 						style={{
 							backgroundImage: `url(${getMediaURL(item.id)})`,
@@ -110,25 +113,31 @@ const ImageGallery: FC<ImageGalleryProps> = ({
 					))}
 				</div>
 
-				<motion.button
-					whileTap={{ scale: 0.95 }}
-					onClick={(e) => {
-						e.stopPropagation()
-						handlePrev()
-					}}
-					className='absolute hover:bg-gray-200 bg-white top-1/2 left-[10%] z-10 -translate-y-1/2 rounded-full p-3 shadow-md'>
-					<ArrowLeft02Icon />
-				</motion.button>
+				<div className='absolute top-1/2 left-[10%] z-10 -translate-y-1/2'>
+					<motion.button
+						whileTap={{ scale: 0.9 }}
+						whileHover={{ scale: 1.1 }}
+						onClick={(e) => {
+							e.stopPropagation()
+							handlePrev()
+						}}
+						className='hover:bg-primary-600 transition bg-primary-500 text-white rounded-full p-3 shadow-md'>
+						<ArrowLeft02Icon />
+					</motion.button>
+				</div>
 
-				<motion.button
-					whileTap={{ scale: 0.95 }}
-					onClick={(e) => {
-						e.stopPropagation()
-						handleNext()
-					}}
-					className='absolute hover:bg-gray-200 bg-white top-1/2 right-[10%] z-10 -translate-y-1/2 rounded-full p-3 shadow-md'>
-					<ArrowRight02Icon />
-				</motion.button>
+				<div className='absolute top-1/2 right-[10%] z-10 -translate-y-1/2'>
+					<motion.button
+						whileTap={{ scale: 0.9 }}
+						whileHover={{ scale: 1.1 }}
+						onClick={(e) => {
+							e.stopPropagation()
+							handleNext()
+						}}
+						className='hover:bg-primary-600 bg-primary-500 transition text-white rounded-full p-3 shadow-md'>
+						<ArrowRight02Icon />
+					</motion.button>
+				</div>
 
 				<div className='absolute bottom-5 rounded-full shadow-md glassmorphism z-20 left-1/2 -translate-x-1/2 py-2 px-3 min-w-40 text-center font-semibold text-white'>
 					{activeIndex + 1} / {media.length}

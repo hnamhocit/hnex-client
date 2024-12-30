@@ -7,7 +7,7 @@ import { FC, memo } from 'react'
 import { IUser } from '@/interfaces/user'
 
 interface AuthorProps {
-	user: IUser
+	user: IUser | undefined
 	isDetail: boolean
 	createdAt: Date
 	updatedAt: Date
@@ -46,7 +46,7 @@ const Author: FC<AuthorProps> = ({ user, isDetail, createdAt, updatedAt }) => {
 				)}>
 				{isChanged ? <Edit01Icon /> : <GlobalIcon size={14} />}
 
-				{moment(isChanged ? updatedAt : createdAt).format('DD/MM/YYYY')}
+				{moment(isChanged ? updatedAt : createdAt).fromNow()}
 			</div>
 		</div>
 	)

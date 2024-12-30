@@ -3,26 +3,18 @@ import { redirect } from 'next/navigation'
 import { FC, memo, MouseEvent, useRef } from 'react'
 
 import { IPost } from '@/interfaces/post'
-import { IUser } from '@/interfaces/user'
-import { getMediaURL } from '@/utils/getUploadURL'
 
 import BusinessCard from '../BusinessCard'
-import ImageGallery from '../ImageGallery'
-import Video from '../Video'
-import Actions from './Actions'
 import Author from './Author'
+import Content from './Content'
 import MoreDropdown from './MoreDropdown'
-import Reactions from './Reactions'
 
 interface PostProps {
 	post: IPost
 	isDetail?: boolean
 }
 
-const Post: FC<PostProps> = ({
-	post: { id, user, updatedAt, createdAt, content, media, reactions, _count },
-	isDetail = false,
-}) => {
+const Post: FC<PostProps> = ({ post, isDetail = false }) => {
 	const avatarRef = useRef<HTMLDivElement>(null)
 	const contentRef = useRef<HTMLDivElement>(null)
 	const actionsRef = useRef<HTMLDivElement>(null)
@@ -35,9 +27,17 @@ const Post: FC<PostProps> = ({
 			!actionsRef.current?.contains(target) &&
 			!avatarRef.current?.contains(target)
 		) {
-			redirect(`/posts/${id}`)
+			redirect(`/posts/${post?.id}`)
 		}
 	}
+
+	const content = (
+		<Content
+			post={post as IPost}
+			isDetail={isDetail}
+			ref={contentRef}
+		/>
+	)
 
 	return (
 		<div
@@ -53,54 +53,33 @@ const Post: FC<PostProps> = ({
 						className='h-fit shrink-0'>
 						<BusinessCard
 							size={isDetail ? 'lg' : 'md'}
-							user={user as IUser}
+							user={post.user}
 						/>
 					</div>
 
-					<div
-						ref={contentRef}
-						className='flex flex-col cursor-default gap-4 flex-1'>
+					{isDetail ? (
 						<Author
-							user={user as IUser}
+							user={post.user}
 							isDetail={isDetail}
-							createdAt={createdAt}
-							updatedAt={updatedAt}
+							createdAt={post.createdAt}
+							updatedAt={post.updatedAt}
 						/>
-
-						<div>{content}</div>
-
-						{media.length > 0 &&
-						media[0].contentType.split('/')[0] === 'video' ? (
-							<Video src={getMediaURL(media[0].id)} />
-						) : (
-							<ImageGallery
-								showCount={4}
-								media={media}
-								className='min-h-60 rounded-2xl'
-							/>
-						)}
-
-						<Reactions reactions={reactions} />
-
-						{!isDetail && (
-							<Actions
-								id={id}
-								reactions={reactions}
-								_count={_count}
-							/>
-						)}
-					</div>
+					) : (
+						content
+					)}
 				</div>
 
 				<div
 					ref={actionsRef}
 					className='shrink-0'>
 					<MoreDropdown
-						id={id}
-						user={user}
+						id={post?.id}
+						user={post?.user}
 					/>
 				</div>
 			</div>
+
+			{isDetail && <div className='mt-4'>{content}</div>}
 		</div>
 	)
 }

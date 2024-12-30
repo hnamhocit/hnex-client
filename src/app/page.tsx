@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import CreatePostModal from '@/components/ui/CreatePostModal'
-import SkeletonPost from '@/components/ui/Loadings/SkeletonPost'
+import PostSkeleton from '@/components/ui/Loadings/PostSkeleton'
 import Post from '@/components/ui/Post'
 import api from '@/config/axios'
 import { socket } from '@/config/socket'
@@ -103,12 +103,12 @@ export default function Home() {
 			<div className='space-y-5'>
 				{loading ? (
 					<>
-						<SkeletonPost />
-						<SkeletonPost />
-						<SkeletonPost />
-						<SkeletonPost />
-						<SkeletonPost />
-						<SkeletonPost />
+						<PostSkeleton />
+						<PostSkeleton />
+						<PostSkeleton />
+						<PostSkeleton />
+						<PostSkeleton />
+						<PostSkeleton />
 					</>
 				) : (
 					posts.map((post) => (
