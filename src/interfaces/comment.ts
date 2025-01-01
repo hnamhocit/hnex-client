@@ -1,5 +1,6 @@
 import { IMedia } from './media'
 import { IPost } from './post'
+import { IReaction } from './reaction'
 import { IUser } from './user'
 
 export type IComment = {
@@ -7,7 +8,10 @@ export type IComment = {
 	parentCommentId: string | null
 	content: string
 	mediaIds: string[]
-	media: IMedia[]
+	media?: IMedia[]
+	reactions?: IReaction[]
+	replies?: IComment[]
+	parentComment?: IComment
 	postId: string
 	post?: IPost
 	userId: string

@@ -10,9 +10,10 @@ import { socket } from '@/config/socket'
 import { ToastContext } from '@/context/ToastContext'
 import { IComment } from '@/interfaces/comment'
 import { IPost } from '@/interfaces/post'
+import { IReaction } from '@/interfaces/reaction'
 import { IResponse } from '@/interfaces/response'
 
-import Comments from './components/Comments'
+import Comments from './Comments'
 
 const PostDetail = () => {
 	const [post, setPost] = useState<IPost | null>(null)
@@ -32,6 +33,7 @@ const PostDetail = () => {
 
 	const events = useMemo(
 		() => [
+			// Post delete
 			{
 				name: 'post:deleted',
 				listener: ({ data }: { data: IPost }) => {
@@ -44,6 +46,7 @@ const PostDetail = () => {
 					}
 				},
 			},
+			// Comment created
 			{
 				name: 'comment:created',
 				listener: ({ data }: { data: IComment }) => {
@@ -52,10 +55,7 @@ const PostDetail = () => {
 							if (data.postId === prev?.id) {
 								return {
 									...prev,
-									comments: [
-										...(prev?.comments ?? []),
-										data as IComment,
-									],
+									comments: [...(prev.comments || []), data],
 								}
 							}
 
@@ -66,6 +66,7 @@ const PostDetail = () => {
 					})
 				},
 			},
+			// Comment updated
 			{
 				name: 'comment:updated',
 				listener: ({ data }: { data: IComment }) => {
@@ -88,6 +89,91 @@ const PostDetail = () => {
 							}
 
 							return prev
+						}
+
+						return null
+					})
+				},
+			},
+			// Comment deleted
+			{
+				name: 'comment:deleted',
+				listener: ({ data }: { data: IComment }) => {
+					setPost((prev) => {
+						if (prev) {
+							if (data.postId === prev.id) {
+								return {
+									...prev,
+									comments: prev.comments?.filter(
+										(c) => c.id !== data.id,
+									),
+								}
+							}
+
+							return prev
+						}
+
+						return null
+					})
+				},
+			},
+			// Reaction created
+			{
+				name: 'reaction:created',
+				listener: ({ data }: { data: IReaction }) => {
+					setPost((prev) => {
+						if (prev) {
+							return {
+								...prev,
+								comments: prev.comments?.map((comment) => {
+									if (data.commentId === comment.id) {
+										return {
+											...comment,
+											reactions: [
+												...(comment.reactions ?? []),
+												data,
+											],
+										}
+									}
+									return comment
+								}),
+							}
+						}
+
+						return null
+					})
+				},
+			},
+			// Reaction updated
+			{
+				name: 'reaction:updated',
+				listener: ({ data }: { data: IReaction }) => {
+					setPost((prev) => {
+						if (prev) {
+							return {
+								...prev,
+								comments: prev.comments?.map((comment) => {
+									if (comment.id === data.commentId) {
+										return {
+											...comment,
+											reactions: comment.reactions?.map(
+												(r) => {
+													if (r.id === data.id) {
+														return {
+															...r,
+															...data,
+														}
+													}
+
+													return r
+												},
+											),
+										}
+									}
+
+									return comment
+								}),
+							}
 						}
 
 						return null

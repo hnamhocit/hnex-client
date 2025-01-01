@@ -3,8 +3,10 @@ import { Edit01Icon, GlobalIcon } from 'hugeicons-react'
 import moment from 'moment'
 import Link from 'next/link'
 import { FC, memo } from 'react'
+import { useSelector } from 'react-redux'
 
 import { IUser } from '@/interfaces/user'
+import { selectUser } from '@/store/reducers/userSlice'
 
 interface AuthorProps {
 	user: IUser | undefined
@@ -14,6 +16,7 @@ interface AuthorProps {
 }
 
 const Author: FC<AuthorProps> = ({ user, isDetail, createdAt, updatedAt }) => {
+	const me = useSelector(selectUser)
 	const isChanged =
 		new Date(updatedAt).getTime() - new Date(createdAt).getTime() > 0
 
@@ -27,7 +30,7 @@ const Author: FC<AuthorProps> = ({ user, isDetail, createdAt, updatedAt }) => {
 						'font-semibold leading-none',
 						isDetail && 'text-xl',
 					)}>
-					{user?.displayName}
+					{user?.id === me.data?.id ? 'You' : user?.displayName}
 				</div>
 
 				<div

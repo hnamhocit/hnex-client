@@ -6,10 +6,10 @@ import { Image } from '@nextui-org/react'
 import NumberFlow from '@number-flow/react'
 
 interface ReactionsProps {
-	reactions?: IReaction[]
+	reactions: IReaction[] | undefined
 }
 
-const Reactions: FC<ReactionsProps> = ({ reactions }) => {
+const UserReactions: FC<ReactionsProps> = ({ reactions }) => {
 	const keys = Array.from(groupByType(reactions ?? []).keys())
 
 	const twoNames = reactions
@@ -53,4 +53,4 @@ const Reactions: FC<ReactionsProps> = ({ reactions }) => {
 	)
 }
 
-export default memo(Reactions)
+export default memo(UserReactions)

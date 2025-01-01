@@ -1,3 +1,4 @@
+import { UserLove01Icon, UserStar01Icon } from 'hugeicons-react'
 import Link from 'next/link'
 import { FC, memo } from 'react'
 import { useSelector } from 'react-redux'
@@ -60,22 +61,26 @@ const BusinessCard: FC<BusinessCardProps> = ({ user, ...props }) => {
 					)}
 				</div>
 
-				<div className='text-xl font-bold'>{user?.displayName}</div>
+				<div className='text-xl font-bold'>
+					{me.data?.id === user?.id ? 'You' : user?.displayName}
+				</div>
 
 				<div className='text-gray-300'>{user?.bio}</div>
 
-				<div className='text-sm transition-all hover:text-primary'>
+				<div className='flex items-center gap-2 text-sm transition-all hover:text-primary'>
 					<span className='font-bold'>
 						{formatNumber(user?.followers?.length ?? 0)}
-					</span>{' '}
+					</span>
 					Followers
+					<UserStar01Icon size={18} />
 				</div>
 
-				<div className='text-sm transition-all hover:text-primary'>
+				<div className='flex items-center gap-2 text-sm transition-all hover:text-primary'>
 					<span className='font-bold'>
 						{formatNumber(user?.followings?.length ?? 0)}
-					</span>{' '}
+					</span>
 					Followings
+					<UserLove01Icon size={18} />
 				</div>
 			</div>
 		</CardContainer>

@@ -9,7 +9,7 @@
 
 @layer components {
 	.glassmorphism {
-		@apply bg-[rgba(55,65,81,.5)] backdrop-blur-md;
+		@apply !bg-[rgba(55,65,81,.5)] !backdrop-blur-md;
 	}
 
 	.no-scrollbar::-webkit-scrollbar {

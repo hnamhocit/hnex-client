@@ -1,3 +1,4 @@
+import { IComment } from './comment'
 import { IPost } from './post'
 import { IUser } from './user'
 
@@ -13,10 +14,12 @@ export enum ReactionType {
 export type IReaction = {
 	type: ReactionType
 	id: string
-	postId: string
 	userId: string
+	postId?: string
 	user?: IUser
 	post?: IPost
+	commentId?: string
+	comment?: IComment
 	createdAt: Date
 	updatedAt: Date
 }

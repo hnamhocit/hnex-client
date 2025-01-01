@@ -18,8 +18,6 @@ const MediaUpload: FC<MediaUploadProps> = ({ files, setFiles }) => {
 			trigger={<UploadButton />}
 			render={({ blobs, onDelete }) => (
 				<div className='space-y-3'>
-					<div className='text-sm'>Media</div>
-
 					<div className='text-sm text-red-600 font-medium'>
 						{files.filter(
 							(file) => file.type.split('/')[0] === 'video',

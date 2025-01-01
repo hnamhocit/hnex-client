@@ -4,10 +4,10 @@ import { IPost } from '@/interfaces/post'
 import { getMediaURL } from '@/utils/getUploadURL'
 
 import ImageGallery from '../../ImageGallery'
+import UserReactions from '../../UserReactions'
 import Video from '../../Video'
 import Actions from '../Actions'
 import Author from '../Author'
-import Reactions from '../Reactions'
 
 interface ContentProps {
 	post: IPost
@@ -45,7 +45,7 @@ const Content: FC<ContentProps> = ({
 				/>
 			)}
 
-			<Reactions reactions={reactions} />
+			<UserReactions reactions={reactions} />
 
 			{!isDetail && (
 				<Actions

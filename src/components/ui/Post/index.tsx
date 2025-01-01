@@ -20,14 +20,16 @@ const Post: FC<PostProps> = ({ post, isDetail = false }) => {
 	const actionsRef = useRef<HTMLDivElement>(null)
 
 	const handleRedirect = (e: MouseEvent<HTMLDivElement>) => {
-		const target = e.target as Node
+		if (!isDetail) {
+			const target = e.target as Node
 
-		if (
-			!contentRef.current?.contains(target) &&
-			!actionsRef.current?.contains(target) &&
-			!avatarRef.current?.contains(target)
-		) {
-			redirect(`/posts/${post?.id}`)
+			if (
+				!contentRef.current?.contains(target) &&
+				!actionsRef.current?.contains(target) &&
+				!avatarRef.current?.contains(target)
+			) {
+				redirect(`/posts/${post?.id}`)
+			}
 		}
 	}
 
