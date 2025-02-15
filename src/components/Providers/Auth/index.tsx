@@ -17,9 +17,6 @@ const Auth = ({ children }: { children: ReactNode }) => {
 		;(async () => {
 			try {
 				const response = await api.get('/users/profile')
-
-				console.log(response.data)
-
 				dispatch(setUser(response.data))
 			} catch (error) {
 				if (error instanceof AxiosError && error.response) {

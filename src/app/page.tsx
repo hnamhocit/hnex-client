@@ -1,43 +1,47 @@
 'use client'
 
-import { FaImage } from 'react-icons/fa6'
-import { useSelector } from 'react-redux'
+import { AxiosError } from 'axios'
+import { toast } from 'react-toastify'
 
 import Header from '@/components/Header'
 import Posts from '@/components/Posts'
 import Stories from '@/components/Stories'
-import { selectUser } from '@/store/slices/userSlice'
-import { Avatar, Button, Input } from '@heroui/react'
+import TextEditor, { TextEditorData } from '@/components/TextEditor'
+import api from '@/config/api'
 
 export default function Home() {
-	const user = useSelector(selectUser)
+	const handleSubmit = async ({
+		setIsDisabled,
+		content,
+		files,
+		reset,
+	}: TextEditorData) => {
+		setIsDisabled(true)
+		const formData = new FormData()
+		files.forEach((file) => formData.append('files', file))
+		formData.append('content', content)
+
+		try {
+			await api.post('/posts/', formData, {
+				headers: { 'Content-Type': 'multipart/form-data' },
+			})
+			reset()
+			setIsDisabled(false)
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				toast.error(error.response?.data.error)
+			}
+
+			console.log(error)
+			setIsDisabled(false)
+		}
+	}
 
 	return (
 		<>
 			<Header />
 
-			<div className='p-4 flex items-center gap-3'>
-				<Input
-					radius='full'
-					placeholder={`What happening now?`}
-					variant='flat'
-					endContent={
-						<Button
-							isIconOnly
-							variant='light'
-							radius='full'>
-							<FaImage size={20} />
-						</Button>
-					}
-				/>
-
-				<div className='shrink-0'>
-					<Avatar
-						src={user?.photo_url ?? ''}
-						alt={user?.display_name}
-					/>
-				</div>
-			</div>
+			<TextEditor onSubmit={handleSubmit} />
 
 			<Stories />
 

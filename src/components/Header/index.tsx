@@ -49,11 +49,11 @@ const Header = () => {
 				<Dropdown>
 					<DropdownTrigger>
 						<Image
-							src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnZcDAMXsmkcn3RgJMXy9OyZRm4rCI5tEzEQ&s'
+							src='https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg'
 							alt='User Avatar'
 							width={44}
 							height={44}
-							className='object-cover rounded-full border-2'
+							className='object-cover rounded-full'
 						/>
 					</DropdownTrigger>
 

@@ -10,8 +10,11 @@ import { z } from 'zod'
 import PasswordInput from '@/components/PasswordInput'
 import api from '@/config/api'
 import { setUser } from '@/store/slices/userSlice'
+import { setTokens } from '@/utils/jwt'
 import { Button, Image, Input } from '@heroui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
+
+import RegisterModal from '../RegisterModal'
 
 const formSchema = z.object({
 	email: z.string().email(),
@@ -43,21 +46,20 @@ const Enter = () => {
 		setIsDisabled(true)
 
 		try {
-			await api.post('/auth/login', {
+			const tokens = await api.post('/auth/login', {
 				email: values.email,
 				password: values.password,
 			})
-
-			const response = await api.get('/users/profile')
-			dispatch(setUser(response.data))
-			toast.success('Logged in successfully 😎')
+			setTokens(tokens.data.access_token, tokens.data.refresh_token)
+			const profile = await api.get('/users/profile')
+			dispatch(setUser(profile.data))
 			reset()
 		} catch (error) {
 			if (error instanceof AxiosError && error.response) {
 				toast.error(`Error: ${error.response.data.error}`)
-			} else {
-				toast.error('An unexpected error occurred!')
 			}
+
+			console.log('Error: ', error)
 		}
 
 		setIsDisabled(false)
@@ -65,10 +67,10 @@ const Enter = () => {
 
 	return (
 		<div className='min-h-screen flex items-center justify-center'>
-			<div className='w-full py-4 bg-white max-w-xs space-y-4'>
+			<div className='w-full bg-white max-w-xs'>
 				<form
 					onSubmit={handleSubmit(onSubmit)}
-					className='w-full py-4 bg-white max-w-xs space-y-4'>
+					className='space-y-5'>
 					<h1 className='text-3xl font-bold text-center'>Login</h1>
 
 					<Controller
@@ -111,6 +113,10 @@ const Enter = () => {
 						radius='full'>
 						Continue
 					</Button>
+
+					<div className='text-center text-sm'>
+						Don&apos;t have an account? <RegisterModal />
+					</div>
 
 					<div className='flex items-center gap-3'>
 						<div className='h-[2px] flex-1 rounded-full bg-gray-100'></div>
